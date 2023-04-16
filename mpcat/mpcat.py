@@ -26,7 +26,7 @@ signal(SIGPIPE, SIG_DFL)
 def mpcat(
     path,
     *,
-    verbose: bool | int | float,
+    verbose: bool | int | float = False,
 ) -> Sequence:
     _path = Path(os.fsdecode(path))
 
@@ -55,12 +55,11 @@ def mpcat(
 @click.pass_context
 def cli(
     ctx,
-    paths: Sequence[str],
-    verbose: bool | int | float,
+    paths: tuple[str, ...],
     verbose_inf: bool,
     dict_output: bool,
+    verbose: bool | int | float = False,
 ) -> None:
-
     tty, verbose = tv(
         ctx=ctx,
         verbose=verbose,
