@@ -59,7 +59,7 @@ def mpcat(
         allow_dash=False,
         path_type=Path,
     ),
-    nargs=1,
+    nargs=-1,
     required=True,
 )
 @click_add_options(click_global_options)
