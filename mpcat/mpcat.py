@@ -75,19 +75,14 @@ def cli(
             valid_types=[
                 bytes,
             ],
-            verbose=gvd,
+            verbose=bool(gvd),
         )
     del paths
 
     index = 0
     for index, path in enumerate(iterator):
-        if verbose:
-            ic(index, path)
+        ic(index, path)
         for thing in mpcat(path, verbose=verbose):
             output(
-                thing,
-                reason=path,
-                dict_output=dict_output,
-                tty=tty,
-                verbose=gvd,
+                thing, reason=path, dict_output=dict_output, tty=tty, verbose=bool(gvd)
             )
