@@ -16,7 +16,8 @@ import click
 from asserttool import ic
 from clicktool import click_add_options
 from clicktool import click_global_options
-from clicktool import tv
+from clicktool import tvicgvd
+from globalverbose import gvd
 from mptool import output
 from unmp import unmp
 
@@ -26,12 +27,11 @@ signal(SIGPIPE, SIG_DFL)
 def mpcat(
     path,
     *,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
 ) -> Sequence:
     _path = Path(os.fsdecode(path))
 
-    if verbose:
-        ic(_path)
+    ic(_path)
     with open(_path, "rb") as fh:
         path_content_iterator = unmp(
             file_handle=fh,
@@ -41,10 +41,10 @@ def mpcat(
                 str,
                 dict,
             ],
-            verbose=verbose,
+            verbose=gvd,
         )
         for thing in path_content_iterator:
-            if verbose == inf:
+            if gvd:
                 ic(thing)
             yield thing
 
@@ -58,12 +58,14 @@ def cli(
     paths: tuple[str, ...],
     verbose_inf: bool,
     dict_output: bool,
-    verbose: bool | int | float = False,
+    verbose: bool = False,
 ) -> None:
-    tty, verbose = tv(
+    tty, verbose = tvicgvd(
         ctx=ctx,
         verbose=verbose,
         verbose_inf=verbose_inf,
+        ic=ic,
+        gvd=gvd,
     )
 
     if paths:
@@ -73,7 +75,7 @@ def cli(
             valid_types=[
                 bytes,
             ],
-            verbose=verbose,
+            verbose=gvd,
         )
     del paths
 
@@ -83,5 +85,9 @@ def cli(
             ic(index, path)
         for thing in mpcat(path, verbose=verbose):
             output(
-                thing, reason=path, dict_output=dict_output, tty=tty, verbose=verbose
+                thing,
+                reason=path,
+                dict_output=dict_output,
+                tty=tty,
+                verbose=gvd,
             )
