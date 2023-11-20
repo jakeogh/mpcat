@@ -25,7 +25,7 @@ signal(SIGPIPE, SIG_DFL)
 
 
 def mpcat(
-    path,
+    path: Path,
     *,
     verbose: bool = False,
 ) -> Sequence:
@@ -50,12 +50,23 @@ def mpcat(
 
 
 @click.command()
-@click.argument("paths", type=str, nargs=-1)
+@click.argument(
+    "paths",
+    type=click.Path(
+        exists=True,
+        dir_okay=False,
+        file_okay=False,
+        allow_dash=False,
+        path_type=Path,
+    ),
+    nargs=1,
+    required=True,
+)
 @click_add_options(click_global_options)
 @click.pass_context
 def cli(
     ctx,
-    paths: tuple[str, ...],
+    paths: tuple[Path, ...],
     verbose_inf: bool,
     dict_output: bool,
     verbose: bool = False,
@@ -82,7 +93,7 @@ def cli(
     index = 0
     for index, path in enumerate(iterator):
         ic(index, path)
-        for thing in mpcat(path, verbose=verbose):
+        for thing in mpcat(path):
             output(
                 thing, reason=path, dict_output=dict_output, tty=tty, verbose=bool(gvd)
             )
