@@ -55,7 +55,7 @@ def mpcat(
     type=click.Path(
         exists=True,
         dir_okay=False,
-        file_okay=False,
+        file_okay=True,
         allow_dash=False,
         path_type=Path,
     ),
