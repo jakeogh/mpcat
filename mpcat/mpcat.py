@@ -60,7 +60,7 @@ def mpcat(
         path_type=Path,
     ),
     nargs=-1,
-    required=True,
+    required=False,
 )
 @click_add_options(click_global_options)
 @click.pass_context
