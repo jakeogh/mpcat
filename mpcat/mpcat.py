@@ -100,7 +100,7 @@ def cli(
         for _k, _v in mpcat(path, dict=dict):
             output(
                 _v,
-                reason=_v,
+                reason=_k,
                 dict_output=dict_output,
                 tty=tty,
                 verbose=bool(gvd),
