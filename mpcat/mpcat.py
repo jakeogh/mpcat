@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import os
 from collections.abc import Sequence
-from math import inf
 from pathlib import Path
 from signal import SIG_DFL
 from signal import SIGPIPE
@@ -27,6 +26,7 @@ signal(SIGPIPE, SIG_DFL)
 def mpcat(
     path: Path,
     *,
+    dict: bool,
     verbose: bool = False,
 ) -> Sequence:
     _path = Path(os.fsdecode(path))
@@ -43,10 +43,14 @@ def mpcat(
             ],
             verbose=gvd,
         )
-        for thing in path_content_iterator:
-            if gvd:
-                ic(thing)
-            yield thing
+        _k = _path
+        for _mpobject in path_content_iterator:
+            if isinstance(_mpobject, dict):
+                for _k, _v in _mpobject.items():
+                    break  # assume single k:v dict
+            else:
+                _v = _mpobject
+            yield _k, _v
 
 
 @click.command()
@@ -93,7 +97,11 @@ def cli(
     index = 0
     for index, path in enumerate(iterator):
         ic(index, path)
-        for thing in mpcat(path):
+        for _k, _v in mpcat(path, dict=dict):
             output(
-                thing, reason=path, dict_output=dict_output, tty=tty, verbose=bool(gvd)
+                _v,
+                reason=_v,
+                dict_output=dict_output,
+                tty=tty,
+                verbose=bool(gvd),
             )
